@@ -11,12 +11,13 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.Icicle;
+import icepick.processor.IcepickProcessor;
 
 
 public class MainActivity extends Activity implements MVPAbstractView {
-
     MainPresenter presenter;
-
     @InjectView(R.id.tvCardName)TextView tvCardName;
     @InjectView(R.id.tvManaCost)TextView tvCMC;
     @InjectView(R.id.tvCardText)TextView tvCardText;
@@ -25,13 +26,30 @@ public class MainActivity extends Activity implements MVPAbstractView {
     @InjectView(R.id.etCardName)EditText etCardName;
     @InjectView(R.id.btnFindCard)Button btnFindCard;
 
+    @Icicle String cardName;
+    @Icicle String manaCost;
+    @Icicle String cardText;
+    @Icicle String flavorText;
+    @Icicle String powerToughness;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        if (savedInstanceState != null) {
+            this.setViewText();
+        }
+
         presenter = new MainPresenter(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @OnClick(R.id.btnFindCard)
@@ -67,15 +85,24 @@ public class MainActivity extends Activity implements MVPAbstractView {
 
     @Override
     public void setData(Card data) {
-        tvCardName.setText(data.getName());
-        tvCMC.setText(data.getMana_cost());
-        tvCardText.setText(data.getCard_text());
-        tvFlavorText.setText(data.getFlavor_text());
-        tvPowerToughness.setText(data.getPower_toughness());
+        this.cardName = data.getName();
+        this.manaCost = data.getMana_cost();
+        this.cardText = data.getCard_text();
+        this.flavorText = data.getFlavor_text();
+        this.powerToughness = data.getPower_toughness();
+        setViewText();
     }
 
     @Override
     public void showLoadingImage() {
         tvCardName.setText("loading card....");
+    }
+
+    public void setViewText(){
+        this.tvCardName.setText(cardName==null?"":cardName);
+        this.tvCMC.setText(manaCost==null?"":manaCost);
+        this.tvCardText.setText(cardText==null?"":cardText);
+        this.tvFlavorText.setText(flavorText==null?"":flavorText);
+        this.tvPowerToughness.setText(powerToughness==null?"":powerToughness);
     }
 }

@@ -32,6 +32,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'frankiesardo:icepick:3.0.2'
+    provided 'frankiesardo:icepick-processor:3.0.2'
 }
 
 buildscript {
@@ -47,6 +49,7 @@ buildscript {
 // Required because retrolambda is on maven central
 repositories {
     mavenCentral()
+    maven {url "https://clojars.org/repo/"}
 }
 
 apply plugin: 'com.android.application' //or apply plugin: 'java'
